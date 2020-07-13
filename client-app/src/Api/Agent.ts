@@ -1,12 +1,12 @@
 import Axios, { AxiosResponse } from "axios";
 import { IActivity } from "../Models/Activity";
-import { resolve } from "dns";
 
 Axios.defaults.baseURL = "http://localhost:5000/api";
 
 const responseBody = (response: AxiosResponse) => response.data;
 
 //this is used for delaying 
+
 const sleep = (ms: number) => (response: AxiosResponse) =>
   new Promise<AxiosResponse>((resolve) =>
     setTimeout(() => resolve(response), ms)

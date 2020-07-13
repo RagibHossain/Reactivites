@@ -1,21 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Form, Button } from "semantic-ui-react";
 import { IActivity } from "../../../Models/Activity";
 import {v4 as uuid} from 'uuid'
-
+import { observer } from "mobx-react-lite";
+import ActivityStore from "../../../App/Stores/activityStore"
 interface IProps {
-  setEditMode: (editMode: boolean) => void;
   activity: IActivity;
-  createActivity: (activity: IActivity) => void;
-  editActivity: (activity: IActivity) => void;
-  submitting : boolean
 }
-export const ActivityForm: React.FC<IProps> = ({
-  setEditMode,
+const ActivityForm: React.FC<IProps> = ({
   activity: initializeFormState,
-  createActivity,
-  editActivity,
-  submitting
 }) => {
   const initializeForm = () => {
     if (initializeFormState) return initializeFormState;
@@ -48,7 +41,8 @@ export const ActivityForm: React.FC<IProps> = ({
     setActivity({ ...activity, [name]: value });
   };
   const [activity, setActivity] = useState<IActivity>(initializeForm);
-
+  const activityStore = useContext(ActivityStore)
+  const {submitting,cancelForm,createActivity,editActivity} = activityStore;
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Input
@@ -91,7 +85,7 @@ export const ActivityForm: React.FC<IProps> = ({
       />
       <Button loading={submitting} type="submit" content="Submit" color="facebook" />
       <Button
-        onClick={() => setEditMode(false)}
+        onClick={() => cancelForm()}
         type="button"
         content="Cancel"
         color="black"
@@ -99,3 +93,4 @@ export const ActivityForm: React.FC<IProps> = ({
     </Form>
   );
 };
+export default observer(ActivityForm);

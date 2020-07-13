@@ -1,29 +1,15 @@
-import React, { SyntheticEvent } from "react";
+import React, { useContext } from "react";
 import { Item, Button, Segment, Label } from "semantic-ui-react";
-import { IActivity } from "../../../Models/Activity";
+import { observer } from "mobx-react-lite";
+import ActivityStore from '../../../App/Stores/activityStore'
 
-interface IProps {
-  activities: IActivity[];
-  selectActivity: (id: string) => void;
-  editMode: boolean;
-  setEditMode: (editMode: boolean) => void;
-  deleteActivity: (event : SyntheticEvent<HTMLButtonElement>,id: string) => void;
-  submitting: boolean;
-  target : string
-}
-export const ActivityList: React.FC<IProps> = ({
-  activities,
-  selectActivity,
-  setEditMode,
-  editMode,
-  deleteActivity,
-  submitting,
-  target
-}) => {
+ const ActivityList: React.FC = () => {
+  const activityStore = useContext(ActivityStore)
+  const {activitiesByDate,selectActivity,deleteActivity,submitting,target} = activityStore
   return (
     <Segment>
       <Item.Group divided>
-        {activities.map((activity) => (
+        {activitiesByDate.map((activity) => (
           <Item key={activity.id}>
             <Item.Content>
               <Item.Header as="a">{activity.title}</Item.Header>
@@ -41,7 +27,6 @@ export const ActivityList: React.FC<IProps> = ({
                   color="pink"
                   onClick={() => {
                     selectActivity(activity.id);
-                    editMode && setEditMode(false);
                   }}
                 />
                 <Button
@@ -61,3 +46,4 @@ export const ActivityList: React.FC<IProps> = ({
     </Segment>
   );
 };
+export default observer(ActivityList);
