@@ -13,7 +13,7 @@ const sleep = (ms: number) => (response: AxiosResponse) =>
   );
 
 const request = {
-  get: (url: string) => Axios.get(url).then( sleep(3000)).then(responseBody),
+  get: (url: string) => Axios.get(url).then( sleep(1000)).then(responseBody),
   post: (url: string, body: {}) => Axios.post(url, body).then( sleep(1000)).then(responseBody),
   put: (url: string, body: {}) => Axios.put(url, body).then( sleep(1000)).then(responseBody),
   del: (url: string) => Axios.delete(url).then( sleep(1000)).then(responseBody),

@@ -2,12 +2,13 @@ import React, { useContext } from "react";
 import { Item, Button, Segment, Label } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 import ActivityStore from '../../../App/Stores/activityStore'
+import { Link } from "react-router-dom";
 
  const ActivityList: React.FC = () => {
   const activityStore = useContext(ActivityStore)
-  const {activitiesByDate,selectActivity,deleteActivity,submitting,target} = activityStore
+  const {activitiesByDate,deleteActivity,submitting,target} = activityStore
   return (
-    <Segment>
+    <Segment clearing>
       <Item.Group divided>
         {activitiesByDate.map((activity) => (
           <Item key={activity.id}>
@@ -25,9 +26,8 @@ import ActivityStore from '../../../App/Stores/activityStore'
                   floated="right"
                   content="View"
                   color="pink"
-                  onClick={() => {
-                    selectActivity(activity.id);
-                  }}
+                  as={Link}
+                  to={`/activities/${activity.id}`}
                 />
                 <Button
                   name={activity.id}

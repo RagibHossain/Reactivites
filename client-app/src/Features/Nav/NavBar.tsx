@@ -1,25 +1,21 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Menu, Container, Button } from 'semantic-ui-react'
-import ActivityStore from "../../App/Stores/activityStore"
+import logo from '../../logo.png'
+import { NavLink } from 'react-router-dom'
 
 export const NavBar : React.FC = () => {
-    const handleClick = () =>{
-        activityStore.openCreateForm();
-    }
-    const activityStore = useContext(ActivityStore);
-
+   
     return (
-      
-       
+          
         <Menu fixed='top' inverted>
         <Container>
-        <Menu.Item>
-            <img src="./assets/logo.png" alt="Logo"/>
+        <Menu.Item as={NavLink} exact to='/'>
+            <img src={logo} alt="Logo"/>
             Reactivities
         </Menu.Item>
-        <Menu.Item>Activities</Menu.Item>
+        <Menu.Item as={NavLink} to='/activities'>Activities</Menu.Item>
         <Menu.Item >
-            <Button onClick={handleClick} floated='right' positive content='Add Acitivity'/>
+            <Button as={NavLink} to='/createActivity' floated='right' positive content='Add Acitivity'/>
         </Menu.Item>
            
          </Container>
