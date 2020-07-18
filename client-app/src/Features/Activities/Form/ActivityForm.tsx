@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Form, Button } from "semantic-ui-react";
+import { Form, Button, Grid } from "semantic-ui-react";
 import { IActivity } from "../../../Models/Activity";
 import { v4 as uuid } from "uuid";
 import { observer } from "mobx-react-lite";
@@ -61,7 +61,9 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
   },[loadActivity,clearActivity,initializeFormState,match.params.id,activity.id.length]);
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Grid>
+      <Grid.Column width={10}>
+      <Form onSubmit={handleSubmit}>
       <Form.Input
         onChange={handleChange}
         placeholder="Title"
@@ -113,6 +115,9 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
         color="black"
       />
     </Form>
+      </Grid.Column>
+    </Grid>
+   
   );
 };
 export default observer(ActivityForm);
