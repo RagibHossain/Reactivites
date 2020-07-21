@@ -1,17 +1,10 @@
-import React, { useContext } from "react";
-import { Item, Button, Label, Segment, Icon } from "semantic-ui-react";
+import React from "react";
+import { Item, Button, Segment, Icon } from "semantic-ui-react";
 import { IActivity } from "../../../Models/Activity";
 import { Link } from "react-router-dom";
-import ActivityStore from "../../../App/Stores/activityStore";
-
 const ActivityItemList: React.FC<{ activity: IActivity }> = ({ activity }) => {
-  const activityStore = useContext(ActivityStore);
-  const {
-    activitiesByDate,
-    deleteActivity,
-    submitting,
-    target,
-  } = activityStore;
+  
+  
   const btnStyle = {
     backgroundColor :'rgb(17, 37, 78)',
     color : 'white'

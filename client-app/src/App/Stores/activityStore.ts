@@ -1,5 +1,4 @@
 import { IActivity } from "../../Models/Activity";
-
 import { observable, action, computed,configure,runInAction} from "mobx";
 import Agent from "../../Api/Agent";
 import { createContext, SyntheticEvent } from "react";
@@ -21,7 +20,6 @@ class ActivityStore {
     const sortedActivities = activities.sort(
       (a,b) => Date.parse(a.date) - Date.parse(b.date)
     )
-  
   
     return Object.entries(sortedActivities.reduce((activities,activity) => {
          const date = activity.date.split('T')[0]
@@ -130,8 +128,11 @@ class ActivityStore {
         })
       } catch(error)
       {
-        this.loadingInitial = false;
-        console.log(error);
+        runInAction('load activity error',() =>{
+          this.loadingInitial = false;
+        })
+      
+        //throw error;
       }
     }
   }

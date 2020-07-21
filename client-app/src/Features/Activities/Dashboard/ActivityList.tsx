@@ -1,17 +1,13 @@
 import React, { useContext, Fragment } from "react";
-import { Item, Button, Segment, Label } from "semantic-ui-react";
+import { Item, Label } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 import ActivityStore from "../../../App/Stores/activityStore";
-import { Link } from "react-router-dom";
 import ActivityItemList from "./ActivityItemList";
 
 const ActivityList: React.FC = () => {
   const activityStore = useContext(ActivityStore);
   const {
     activitiesByDate,
-    deleteActivity,
-    submitting,
-    target,
   } = activityStore;
   const labelStyle = {
     backgroundColor : ' rgb(38, 70, 141)',

@@ -1,8 +1,29 @@
 import Axios, { AxiosResponse } from "axios";
 import { IActivity } from "../Models/Activity";
+import { history } from "..";
+import { toast } from "react-toastify";
 
 Axios.defaults.baseURL = "http://localhost:5000/api";
+Axios.interceptors.response.use(undefined, error => {
 
+  
+  if(error.message === "Network Error" && !error.response)
+  {
+    toast.error("Network error -- make sure API server is running")
+  }
+  const {status,data,config} = error.response;
+  if(status === 404) 
+  { 
+    history.push("/notFoundeekdom");
+  }
+  if(status === 400 && config.method === 'get' && data.errors.hasOwnProperty('id')){
+    history.push('/notFound');
+  }
+  if(status === 500)
+  {
+    toast.error('Server Error Check the terminal for more info');
+  }
+})
 const responseBody = (response: AxiosResponse) => response.data;
 
 //this is used for delaying 

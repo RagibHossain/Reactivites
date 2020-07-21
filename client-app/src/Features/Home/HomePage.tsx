@@ -8,11 +8,11 @@ const HomePage = () => {
               <Container text>
                   <Header as='h1' inverted>
                       <Image size='massive' src={logo} alt='logo' style={{marginBottom: 12}}/>
-                      Reactivities
+                     Tausif er Application
                   </Header>
                   <Header as='h2' inverted content='Welcome to Reactivities' />
                   <Button as={Link} to='/activities' size='huge' inverted>
-                      Take me to the activities!
+                      Dekhi to bhitore ki ase?
                   </Button>
               </Container>
           </Segment>
