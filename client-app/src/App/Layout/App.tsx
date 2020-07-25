@@ -17,7 +17,7 @@ import {ToastContainer} from 'react-toastify'
 const App: React.FC<RouteComponentProps> = ({ location }) => {
   return (
     <Fragment>
-      <ToastContainer position='top-right'/>
+      <ToastContainer position='bottom-left'/>
       <Route exact path="/" component={HomePage} />
       <Route
         path={"/(.+)"}

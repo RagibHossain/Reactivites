@@ -1,123 +1,184 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Form, Button, Grid } from "semantic-ui-react";
-import { IActivity } from "../../../Models/Activity";
+import {
+  ActivityFormValues,
+} from "../../../Models/Activity";
 import { v4 as uuid } from "uuid";
 import { observer } from "mobx-react-lite";
 import ActivityStore from "../../../App/Stores/activityStore";
 import { RouteComponentProps } from "react-router-dom";
+import { Form as FinalForm, Field } from "react-final-form";
+import TextInput from "../../../App/Common/Form/TextInput";
+import TextAreaInput from "../../../App/Common/Form/TextAreaInput";
+import SelectInput from "../../../App/Common/Form/SelectInput";
+import { category } from "../../../App/Common/Options/CategoryOptions";
+import DateInput from "../../../App/Common/Form/DateInput";
+import { CombineDateAndTime } from "../../../App/Common/Util/Util";
+
+import {
+  combineValidators,
+  isRequired,
+  composeValidators,
+  hasLengthGreaterThan,
+} from "revalidate";
+
+const validate = combineValidators({
+  title: isRequired({ message: "Title field required" }),
+  category: isRequired("Category"),
+  description: composeValidators(
+    isRequired("Description"),
+    hasLengthGreaterThan(5)({
+      message: "Description should have morte than 5 letters",
+    })
+  )(),
+  city: isRequired("City"),
+  venue: isRequired("Venue"),
+  date: isRequired("Date"),
+  time : isRequired("Time")
+});
 interface DetailParams {
   id: string;
 }
 const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
   match,
-  history
+  history,
 }) => {
-  const handleSubmit = () => {
-    if (activity.id.length === 0) {
+  // const handleSubmit = () => {
+  //   if (activity.id.length === 0) {
+  //     let newActivity = {
+  //       ...activity,
+  //       id: uuid(),
+  //     };
+  //     createActivity(newActivity).then(() =>
+  //       history.push(`/activities/${newActivity.id}`)
+  //     );
+  //   } else {
+  //     editActivity(activity).then(() =>
+  //       history.push(`/activities/${activity.id}`)
+  //     );
+  //   }
+  // };
+
+  const handleFinalFormSubmit = (values: any) => {
+    const dateAndTime = CombineDateAndTime(values.date, values.time);
+    const { date, time, ...activity } = values;
+    activity.date = dateAndTime;
+    console.log(date);
+    if (!activity.id) {
       let newActivity = {
         ...activity,
         id: uuid(),
       };
-      createActivity(newActivity).then(() => history.push(`/activities/${newActivity.id}`) );
+      createActivity(newActivity);
     } else {
-      editActivity(activity).then(() => history.push(`/activities/${activity.id}`) );
+      editActivity(activity);
     }
   };
-  const handleChange = (event: any) => {
-    const { name, value } = event.target;
-    setActivity({ ...activity, [name]: value });
-  };
 
-  const [activity, setActivity] = useState<IActivity>({
-    id: "",
-    title: "",
-    category: "",
-    description: "",
-    date: "",
-    city: "",
-    venue: "",
-  });
+
+  const [loading, setLoading] = useState(false);
+  const [activity, setActivity] = useState(new ActivityFormValues());
   const activityStore = useContext(ActivityStore);
   const {
     submitting,
     createActivity,
     editActivity,
-    selectedActivity: initializeFormState,
     loadActivity,
-    clearActivity
   } = activityStore;
   useEffect(() => {
-    if(match.params.id && activity.id.length === 0)
-    {
-      loadActivity(match.params.id).then(() => {
-        initializeFormState && setActivity(initializeFormState)
-      })
+    if (match.params.id) {
+      setLoading(true);
+      loadActivity(match.params.id)
+        .then((activity) => {
+          setActivity(new ActivityFormValues(activity));
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
-
-    return (() => {
-      clearActivity()
-    })
-    
-  },[loadActivity,clearActivity,initializeFormState,match.params.id,activity.id.length]);
+  }, [loadActivity, match.params.id]);
 
   return (
     <Grid>
       <Grid.Column width={10}>
-      <Form onSubmit={handleSubmit}>
-      <Form.Input
-        onChange={handleChange}
-        placeholder="Title"
-        value={activity.title}
-        name="title"
-      />
-      <Form.TextArea
-        onChange={handleChange}
-        rows={3}
-        placeholder="Description"
-        value={activity.description}
-        name="description"
-      />
-      <Form.Input
-        type="datetime-local"
-        placeholder="Date"
-        value={activity.date}
-        name="date"
-        onChange={handleChange}
-      />
-      <Form.Input
-        placeholder="City"
-        value={activity.city}
-        name="city"
-        onChange={handleChange}
-      />
-      <Form.Input
-        placeholder="Venue"
-        value={activity.venue}
-        name="venue"
-        onChange={handleChange}
-      />
-      <Form.Input
-        placeholder="Category"
-        value={activity.category}
-        name="category"
-        onChange={handleChange}
-      />
-      <Button
-        loading={submitting}
-        type="submit"
-        content="Submit"
-        color="facebook"
-      />
-      <Button
-        onClick={() => history.push('/activities')}
-        type="button"
-        content="Cancel"
-        color="black"
-      />
-    </Form>
+        <FinalForm
+          validate={validate}
+          initialValues={activity}
+          onSubmit={handleFinalFormSubmit}
+          render={({ handleSubmit,pristine,invalid }) => (
+            <Form onSubmit={handleSubmit} loading={loading}>
+              <Field
+                component={TextInput}
+                placeholder="Title"
+                value={activity.title}
+                name="title"
+              />
+              <Field
+                component={TextAreaInput}
+                placeholder="Description"
+                value={activity.description}
+                name="description"
+                rows={3}
+              />
+              <Field
+                placeholder="Category"
+                value={activity.category}
+                name="category"
+                component={SelectInput}
+                options={category}
+              />
+              <Form.Group widths="equal">
+                <Field
+                  placeholder="Date"
+                  value={activity.date}
+                  name="date"
+                  date={true}
+                  component={DateInput}
+                />
+                <Field
+                  placeholder="Time"
+                  value={activity.time}
+                  name="time"
+                  time={true}
+                  component={DateInput}
+                />
+              </Form.Group>
+
+              <Field
+                placeholder="City"
+                value={activity.city}
+                name="city"
+                component={TextInput}
+              />
+              <Field
+                placeholder="Venue"
+                value={activity.venue}
+                name="venue"
+                component={TextInput}
+              />
+              <Button
+                loading={submitting}
+                disabled={invalid || pristine}
+                type="submit"
+                content="Submit"
+                color="facebook"
+                floated="right"
+              />
+              <Button
+                onClick={
+                  activity.id
+                    ? () => history.push(`/activities/${activity.id}`)
+                    : () => history.push("/activities")
+                }
+                type="button"
+                content="Cancel"
+                color="black"
+              />
+            </Form>
+          )}
+        />
       </Grid.Column>
     </Grid>
-   
   );
 };
 export default observer(ActivityForm);

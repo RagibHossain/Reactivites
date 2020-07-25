@@ -2,6 +2,7 @@ import React from "react";
 import { Item, Button, Segment, Icon } from "semantic-ui-react";
 import { IActivity } from "../../../Models/Activity";
 import { Link } from "react-router-dom";
+import {format} from 'date-fns'
 const ActivityItemList: React.FC<{ activity: IActivity }> = ({ activity }) => {
   
   
@@ -9,14 +10,20 @@ const ActivityItemList: React.FC<{ activity: IActivity }> = ({ activity }) => {
     backgroundColor :'rgb(17, 37, 78)',
     color : 'white'
   }
- 
+         
+  const itemStyle={
+    backgroundColor : '#8cacea',
+    borderRadius : '50%'
+  }
+
   return (
-    <Segment.Group>
-      <Segment>
+    <div style={itemStyle}>
+   <Segment.Group >
+      <Segment >
         <Item.Group>
-          <Item>
+          <Item  >
             <Item.Image size="tiny" circular src="/assets/user.png" />
-            <Item.Content>
+            <Item.Content >
               <Item.Header as="a" color="blue">
                 {activity.title}
               </Item.Header>
@@ -27,7 +34,7 @@ const ActivityItemList: React.FC<{ activity: IActivity }> = ({ activity }) => {
       </Segment>
       <Segment>
         <Icon name="clock" />
-        {activity.date}
+        {format(activity.date,'hh:m a')}
         <Icon name="marker" />
         {activity.city},{activity.venue}
       </Segment>
@@ -35,6 +42,7 @@ const ActivityItemList: React.FC<{ activity: IActivity }> = ({ activity }) => {
       <Segment clearing>
         <span>{activity.description}</span>
         <Button
+        className='Item'
           floated="right"
           content="View"
           style={btnStyle}
@@ -43,6 +51,8 @@ const ActivityItemList: React.FC<{ activity: IActivity }> = ({ activity }) => {
         />
       </Segment>
     </Segment.Group>
+    </div>
+ 
   );
 };
 
