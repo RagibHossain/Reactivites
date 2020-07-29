@@ -6,5 +6,6 @@ export const category = [
   { key: 'music', text: 'Music', value: 'music' },
   { key: 'travel', text: 'Travel', value: 'travel' },
   { key: 'sports', text: 'Sports', value: 'sports' },
-  { key: 'dawat', text: 'Dawat', value: 'dawat' }
+  { key: 'marijuana', text: 'Marijuana', value: 'marijuana' },
+  
 ];

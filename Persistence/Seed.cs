@@ -1,15 +1,44 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Domain;
+using Microsoft.AspNetCore.Identity;
 
 namespace Persistence
 {
     public class Seed
     {
-        public static void SeedData(DataContext context)
+        public static async Task SeedData(DataContext context, UserManager<AppUser> userManager)
         {
-            if(!context.Activites.Any())
+            if (!userManager.Users.Any())
+            {
+               var users = new List<AppUser>{
+                   new AppUser{
+                       DisplayName = "Ragib",
+                       UserName = "ragib",
+                       Email = "ragibibnehossain@gmail.com"
+                   },
+                   new AppUser{
+                       DisplayName = "Ashik",
+                       UserName = "ashik",
+                       Email = "AshikurRahman@gmail.com"
+                   },
+                   new AppUser{
+                       DisplayName = "Ninad",
+                       UserName = "ninad",
+                       Email = "nabiulninad@gmail.com"
+                   }
+
+               };
+
+               foreach(var user in users)
+               {
+                  await userManager.CreateAsync(user,"Pa$$w0rd");
+               }
+            }
+
+            if (!context.Activites.Any())
             {
                 var activities = new List<Activity>{
                  new Activity
@@ -105,9 +134,9 @@ namespace Persistence
                 };
                 context.Activites.AddRange(activities);
                 context.SaveChanges();
-                
+
             }
-            
+
         }
     }
 }

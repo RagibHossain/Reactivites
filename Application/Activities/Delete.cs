@@ -12,10 +12,8 @@ namespace Application.Activities
     {
            public class Command : IRequest
                 {
-        
                  public Guid Id { get; set; }
-                }
-        
+                }        
                 public class Handler : IRequestHandler<Command>
                 {
                     private readonly DataContext _context;
@@ -23,8 +21,7 @@ namespace Application.Activities
                     {
                         _context = context;
         
-                    }
-        
+                    }      
                     public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
                     {
                         var activity =await _context.Activites.FindAsync(request.Id);
@@ -36,8 +33,7 @@ namespace Application.Activities
         
                         if(result) return Unit.Value;
                        
-                       throw new Exception("Problem saving data");
-        
+                       throw new Exception("Problem saving data");      
                     }
                 }
     }
