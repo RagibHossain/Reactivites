@@ -29,7 +29,6 @@ namespace Persistence
                        UserName = "ninad",
                        Email = "nabiulninad@gmail.com"
                    }
-
                };
 
                foreach(var user in users)

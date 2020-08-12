@@ -1,13 +1,14 @@
 import React, { useContext, useEffect } from "react";
 import { Grid } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
-import ActivityStore from "../../../App/Stores/activityStore";
+
 import { RouteComponentProps } from "react-router-dom";
 import LoadingComponent from "../../../App/Layout/LoadingComponent";
 import ActivityDetailedHeader from "./ActivityDetailedHeader";
 import ActivityDetailedInfo from "./ActivityDetailedInfo";
 import ActivityDetailedChat from "./ActivityDetailedChat";
 import ActivityDetailedSideBar from "./ActivityDetailedSideBar";
+import { RootStoreContext } from "../../../App/Stores/rootStore";
 interface CustomParams {
   id: string;
 }
@@ -15,12 +16,12 @@ const ActivityDetails: React.FC<RouteComponentProps<CustomParams>> = ({
   match,
   history,
 }) => {
-  const activityStore = useContext(ActivityStore);
+  const rootStore = useContext(RootStoreContext);
   const {
     selectedActivity: activity,
     loadActivity,
     loadingInitial,
-  } = activityStore;
+  } = rootStore.activityStore;
 
   useEffect(() => {
     loadActivity(match.params.id);

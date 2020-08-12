@@ -2,11 +2,18 @@ import Axios, { AxiosResponse } from "axios";
 import { IActivity } from "../Models/Activity";
 import { history } from "..";
 import { toast } from "react-toastify";
+import { IUser, IUserFormValues } from "../Models/User";
 
 Axios.defaults.baseURL = "http://localhost:5000/api";
-Axios.interceptors.response.use(undefined, error => {
 
-  
+Axios.interceptors.request.use((config) => {
+  const token = window.localStorage.getItem("jwt");
+  if(token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+}, error => {
+  return Promise.reject(error);
+})
+Axios.interceptors.response.use(undefined, error => {
   if(error.message === "Network Error" && !error.response)
   {
     toast.error("Network error -- make sure API server is running")
@@ -23,7 +30,7 @@ Axios.interceptors.response.use(undefined, error => {
   {
     toast.error('Server Error Check the terminal for more info');
   }
-  throw error;
+  throw error.response;
 })
 const responseBody = (response: AxiosResponse) => response.data;
 
@@ -50,6 +57,13 @@ const Activities = {
   Delete: (id: string) => request.del(`/activities/${id}`),
 };
 
+const User = {
+   current : () : Promise<IUser> => request.get("/user"),
+   login : (user : IUserFormValues) : Promise<IUser> => request.post("/user/login",user),
+   register : (user : IUserFormValues) : Promise<IUser> => request.post("/user/register",user)
+};
+
 export default {
   Activities,
+  User
 };

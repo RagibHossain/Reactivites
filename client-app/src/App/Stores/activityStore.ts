@@ -1,13 +1,19 @@
 import { IActivity } from "../../Models/Activity";
-import { observable, action, computed, configure, runInAction } from "mobx";
+import { observable, action, computed,runInAction } from "mobx";
 import Agent from "../../Api/Agent";
-import { createContext, SyntheticEvent } from "react";
+import {  SyntheticEvent } from "react";
 import { history } from "../..";
 import { toast } from "react-toastify";
+import { RootStore } from "./rootStore";
 
-configure({ enforceActions: "always" });
 
-class ActivityStore {
+
+export default class ActivityStore {
+  rootStore : RootStore;
+  
+  constructor(rootStore : RootStore){
+   this.rootStore = rootStore;
+  }
   @observable activityRegistry = new Map();
   @observable loadingInitial = false;
   @observable selectedActivity: IActivity | null = null;
@@ -136,8 +142,6 @@ class ActivityStore {
         runInAction("load activity error", () => {
           this.loadingInitial = false;
         });
-
-        //throw error;
       }
     }
   };
@@ -152,4 +156,4 @@ class ActivityStore {
   };
 }
 
-export default createContext(new ActivityStore());
+
