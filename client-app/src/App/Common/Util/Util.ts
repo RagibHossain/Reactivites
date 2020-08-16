@@ -1,4 +1,5 @@
-
+import { IAttendee } from "../../../Models/Activity";
+import {IUser} from "../../../Models/User"
 
 export const CombineDateAndTime = (date : Date,time : Date) => {
 
@@ -12,3 +13,12 @@ export const CombineDateAndTime = (date : Date,time : Date) => {
     return new Date(dateString+" "+timeString);
 
 }
+
+export const createAttendee = (user : IUser) : IAttendee => {
+    return{
+        displayName : user.displayName,
+        username : user.username,
+        isHost : false,
+        image : user.image!
+    }
+} 

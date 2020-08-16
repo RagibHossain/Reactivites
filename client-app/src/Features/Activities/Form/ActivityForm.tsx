@@ -21,6 +21,7 @@ import {
   hasLengthGreaterThan,
 } from "revalidate";
 import { RootStoreContext } from "../../../App/Stores/rootStore";
+import { runInAction } from "mobx";
 
 const validate = combineValidators({
   title: isRequired({ message: "Title field required" }),
@@ -90,7 +91,10 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
       setLoading(true);
       loadActivity(match.params.id)
         .then((activity) => {
-          setActivity(new ActivityFormValues(activity));
+          runInAction(() => {
+            setActivity(new ActivityFormValues(activity));
+          })
+         
         })
         .finally(() => {
           setLoading(false);

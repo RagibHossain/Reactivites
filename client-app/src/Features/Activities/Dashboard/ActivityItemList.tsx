@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
-import { Item, Button, Segment, Icon } from "semantic-ui-react";
+import React from "react";
+import { Item, Button, Segment, Icon, Label } from "semantic-ui-react";
 import { IActivity } from "../../../Models/Activity";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
-import { RootStoreContext } from "../../../App/Stores/rootStore";
+import ActivityListItemAttendees from "./ActivityListItemAttendees";
 const ActivityItemList: React.FC<{ activity: IActivity }> = ({ activity }) => {
   const btnStyle = {
     backgroundColor: "rgb(17, 37, 78)",
@@ -14,8 +14,8 @@ const ActivityItemList: React.FC<{ activity: IActivity }> = ({ activity }) => {
     backgroundColor: "#8cacea",
     borderRadius: "50%",
   };
-  const rootStore = useContext(RootStoreContext);
-  const { user } = rootStore.userStore;
+ 
+  const host = activity.attendees.filter(x => x.isHost)[0];
   return (
     <div style={itemStyle}>
       <Segment.Group>
@@ -28,8 +28,26 @@ const ActivityItemList: React.FC<{ activity: IActivity }> = ({ activity }) => {
                   {activity.title}
                 </Item.Header>
                 <Item.Description>
-                  Hosted by {user?.displayName}
+                  Hosted by {host?.displayName}
                 </Item.Description>
+                {activity.isHost && (
+                  <Item.Description>
+                    <Label
+                      basic
+                      color="olive"
+                      content="You are hosting this activity"
+                    />
+                  </Item.Description>
+                )}
+                {activity.isGoing && !activity.isHost && (
+                  <Item.Description>
+                    <Label
+                      basic
+                      color="violet"
+                      content="You are going to this activity"
+                    />
+                  </Item.Description>
+                )}
               </Item.Content>
             </Item>
           </Item.Group>
@@ -40,7 +58,9 @@ const ActivityItemList: React.FC<{ activity: IActivity }> = ({ activity }) => {
           <Icon name="marker" />
           {activity.city},{activity.venue}
         </Segment>
-        <Segment secondary>attendees will go here</Segment>
+        <Segment secondary>
+          <ActivityListItemAttendees attendees={activity.attendees} />
+        </Segment>
         <Segment clearing>
           <span>{activity.description}</span>
           <Button

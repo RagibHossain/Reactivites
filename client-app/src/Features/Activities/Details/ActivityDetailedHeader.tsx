@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Segment, Image, Item, Header, Button } from "semantic-ui-react";
 import { IActivity } from "../../../Models/Activity";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import { RootStoreContext } from "../../../App/Stores/rootStore";
+import { observer } from "mobx-react-lite";
 
 const ActivityDetailedHeader: React.FC<{ activity: IActivity }> = ({
   activity,
@@ -19,6 +21,8 @@ const ActivityDetailedHeader: React.FC<{ activity: IActivity }> = ({
     height: "auto",
     color: "white",
   };
+  const rootStore = useContext(RootStoreContext);
+  const {cancelAttendance,attendActivity,loading} = rootStore.activityStore;
   return (
     <Segment.Group>
       <Segment basic attached="top" style={{ padding: "0" }}>
@@ -36,9 +40,9 @@ const ActivityDetailedHeader: React.FC<{ activity: IActivity }> = ({
                   content={activity.title}
                   style={{ color: "white" }}
                 />
-                <p>{format(activity.date,'eeee do MMMM')}</p>
+                <p>{format(activity.date, "eeee do MMMM")}</p>
                 <p>
-                  Hosted by <strong>Bob</strong>
+                  Hosted by <strong>{}</strong>
                 </p>
               </Item.Content>
             </Item>
@@ -46,14 +50,23 @@ const ActivityDetailedHeader: React.FC<{ activity: IActivity }> = ({
         </Segment>
       </Segment>
       <Segment clearing attached="bottom">
-        <Button color="teal">Join Activity</Button>
-        <Button>Cancel attendance</Button>
-        <Button as={Link} to={`/manage/${activity.id}`} color="orange" floated="right">
-          Manage Event
-        </Button>
+        {activity.isHost ? (
+          <Button
+            as={Link}
+            to={`/manage/${activity.id}`}
+            color="orange"
+            floated="right"
+          >
+            Manage Event
+          </Button>
+        ) : activity.isGoing ? (
+          <Button loading={loading} onClick={() => cancelAttendance()}>Cancel attendance</Button>
+        ) : (
+          <Button loading={loading} color="teal" onClick={() => attendActivity()}>Join Activity</Button>
+        )}
       </Segment>
     </Segment.Group>
   );
 };
 
-export default ActivityDetailedHeader;
+export default observer(ActivityDetailedHeader);
