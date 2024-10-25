@@ -16,6 +16,7 @@ Axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
 Axios.interceptors.response.use(undefined, (error) => {
   if (error.message === "Network Error" && !error.response) {
     toast.error("Network error -- make sure API server is running");
