@@ -39,8 +39,6 @@ Axios.interceptors.response.use(undefined, (error) => {
 });
 const responseBody = (response: AxiosResponse) => response.data;
 
-//this is used for delaying
-
 const sleep = (ms: number) => (response: AxiosResponse) =>
   new Promise<AxiosResponse>((resolve) =>
     setTimeout(() => resolve(response), ms)
